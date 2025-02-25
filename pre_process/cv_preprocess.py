@@ -16,7 +16,6 @@ class ImgPreprocessing:
         else:
             self.image = None
         self.original_image = None
-        self.image_rgb = None
 
     def load_image(self, path):
         """
@@ -40,17 +39,6 @@ class ImgPreprocessing:
 
         self.image = image.copy()
 
-    def convert_to_rgb(self):
-        """
-        Преобразует изображение в формат RGB.
-        """
-        if self.image.shape[2] == 4:  # Если изображение имеет альфа-канал
-            self.image_rgb = Image.fromarray(self.image).convert('RGB')
-            self.image_rgb = np.array(self.image_rgb)
-        else:
-            self.image_rgb = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)  # Преобразуем из BGR в RGB
-        return self.image_rgb
-
     def convert_to_grey(self):
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         return self.image
@@ -73,7 +61,7 @@ class ImgPreprocessing:
         return self.image
 
     def calculate_bisector_angle(self):
-        #gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         thresh = cv2.adaptiveThreshold(self.image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                        cv2.THRESH_BINARY_INV, 15, 5)
         # Сегментация строк
@@ -123,7 +111,7 @@ class ImgPreprocessing:
         M[0, 2] += (new_w - w) // 2
         M[1, 2] += (new_h - h) // 2
         self.image = cv2.warpAffine(self.image, M, (new_w, new_h), flags=cv2.INTER_CUBIC,
-                                       borderMode=cv2.BORDER_REPLICATE)
+                                    borderMode=cv2.BORDER_REPLICATE)
         return self.image
 
     def change_contrast(self, factor=1.2):
